@@ -23,5 +23,9 @@ COPY backend/ ./
 # Expose the port (Render will provide $PORT at runtime)
 EXPOSE 8000
 
-# Use the PORT environment variable if provided by the host
-CMD ["/bin/sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+# Copy start script and make it executable
+COPY backend/start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Use the start script as the container entrypoint (uses $PORT)
+ENTRYPOINT ["/start.sh"]
