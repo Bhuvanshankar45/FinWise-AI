@@ -35,6 +35,7 @@ htmlcov/
 # Local config
 .env
 .env.*
+!.env.example
 fitness.db
 logs/
 *.log
