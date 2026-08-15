@@ -1,13 +1,31 @@
 services:
   - type: web
-    name: fitai
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run app.py --server.port $PORT
+    name: finwise-backend
+    env: python
+    repo: https://github.com/Bhuvanshankar45/FinWise-AI.git
+    branch: main
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
     envVars:
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: FITAI_SECRET_KEY
-        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: RENDER_ENV
+        value: production
+
+  - type: static
+    name: finwise-frontend
+    repo: https://github.com/Bhuvanshankar45/FinWise-AI.git
+    branch: main
+    buildCommand: npm ci --prefix frontend && npm run build --prefix frontend
+    publishPath: frontend/dist
+
+databases:
+  - name: finwise-db
+    engine: POSTGRES
+    version: "15"
+
+# Notes:
+# - Do NOT store secrets here. Set SECRET_KEY, DATABASE_URL, BACKEND_CORS_ORIGINS, ML_MODEL_URL, etc. in the Render dashboard for each service.
+# - Adjust plan/instance sizing in the Render UI as required.
+# - If you prefer Docker for the backend, change the backend service env to "docker" and Render will use the Dockerfile in backend/Dockerfile.
