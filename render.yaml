@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: fitai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: FITAI_SECRET_KEY
+        sync: false
