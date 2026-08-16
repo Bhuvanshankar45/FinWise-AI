@@ -11,11 +11,17 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
+    libpq-dev \
+    libssl-dev \
+    libffi-dev \
+    pkg-config \
+    gcc \
   && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Upgrade pip tools for better package compatibility, then install Python dependencies
 COPY backend/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy backend source
 COPY backend/ ./
